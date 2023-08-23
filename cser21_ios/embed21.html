@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: content:">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title></title>
+    <meta http-equiv="Content-Language" content="vi" />
+    <link rel="stylesheet" href="https://quanly.wow.edu.vn/app2021/assets/css/index.css" />
+
+<!--    <link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" />-->
+    <style type="text/css">
+        *, ::after, ::before {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            text-align: left;
+            background-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            background-color: transparent;
+            overflow:hidden
+        }
+
+        #splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10001;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-color: #fff;
+        }
+
+        #splash-screen img {
+            margin-left: calc(100vw - 100%);
+            margin-bottom: 30px;
+            max-width: 100px;
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-spinner {
+            animation: rotate 2s linear infinite;
+            margin-left: calc(100vw - 100%);
+            width: 50px;
+            height: 50px;
+        }
+
+        .splash-spinner .path {
+            stroke: #f2942c;
+            stroke-linecap: round;
+            animation: dash 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes dash {
+            0% {
+                stroke-dasharray: 1, 150;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -35;
+            }
+            100% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -124;
+            }
+        }
+    </style>
+
+    <style>
+        /*{{app}}*/
+    </style>
+
+
+
+    <script>
+        /**
+         * Mỗi khi Người dùng bấm nút back trên dt
+         * ANDROID_ONBACK sẽ đc thực thị
+         */
+        var ANDROID_ONBACK = function () {
+            if (!window.ANDROID) return;
+            if (!ANDROID.IsNoBack) {
+                document.getElementById('ANDROID_ONBACK_MESS').style.display = 'block';
+            }
+
+        }
+        var ANDROID_HIDE = function () {
+            window.ANDROID && ANDROID.NoBack(true);
+            document.getElementById('ANDROID_ONBACK_MESS').style.display = 'none';
+        }
+
+        var NEW_APP = true
+
+    </script>
+</head>
+<body>
+<div id="app"></div>
+<div id="splash-screen" class="kt-splash-screen">
+    <img src="https://quanly.wow.edu.vn/app2021/media/logos/logo.png" alt="EZS - Phần mềm quản lý Spa" />
+    <svg class="splash-spinner" viewBox="0 0 50 50">
+        <circle class="path"
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                stroke-width="5"
+        ></circle>
+    </svg>
+</div>
+
+<script>
+        var PREV_ERROR = false;
+        var APP_READY = false;
+        function ERROR() {
+            PREV_ERROR = true;
+            PREPARE();
+
+            //LOADER21s.innerHTML = '<div class="preloaderEzs"></div>';
+        }
+        function PREPARE() {
+            var ANDROID_ONBACK_MESS = document.getElementById('ANDROID_ONBACK_MESS');
+            if (!ANDROID_ONBACK_MESS) {
+                ANDROID_ONBACK_MESS = document.createElement('div');
+                ANDROID_ONBACK_MESS.id = "ANDROID_ONBACK_MESS";
+                ANDROID_ONBACK_MESS.innerHTML = 'Bấm thêm lần nữa để thoát';
+                document.body.appendChild(ANDROID_ONBACK_MESS);
+            }
+        }
+
+        var VER = '1001';
+        /**
+         * gửi yêu cầu tới app IOS || app Android
+         */
+        function app_request(cmd, value) {
+            if (window['ANDROID'])
+                ANDROID.Do(cmd, value);
+            else
+                window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.IOS.postMessage({
+                    "cmd": cmd,
+                    "value": value
+                })
+        }
+
+        /**
+         * App trả lời
+         */
+        function app_response(cmd, value) {
+
+
+        }
+        function box(fn) {
+            try {
+                fn && fn();
+            } catch (e) {
+
+            }
+        }
+
+        const SCRIPT_START = 'SCRIPT_START';
+        const SCRIPT_INDEX = 'SCRIPT_INDEX';
+
+
+
+        function __embedJs(s) {
+            var t = document.createElement('script');
+            t.innerHTML = s;
+            document.body.appendChild(t);
+        }
+
+        /*
+         prepare function
+         */
+        var LOADER21 = document.querySelector('.LOADER21');
+        function COUNTDOWN(N) {
+
+        }
+        function STATUS() {
+
+        }
+
+        /* function CLEAR_LOADER() {
+            ['.splash','.LOADER21'].forEach(function (el) {
+                box(() => {
+                    document.querySelector(el).remove();
+                })
+            })
+
+        } */
+
+        /*
+         Step1: SCRIPT_START
+         */
+        box(() => {
+            var n = SCRIPT_START;
+            var s = localStorage.getItem(n);
+            if (n) {
+                __embedJs(s);
+            }
+        });
+
+        /*
+         Step2: SCRIPT_INDEX
+         */
+        box(() => {
+
+            var link = 'https://quanly.wow.edu.vn/app2021/index.aspx';
+            var N = 5;
+            var isShowLoader = false;
+
+            /* var showLoaderInv = setTimeout(function () {
+                isShowLoader = true;
+            }, 1000); */
+
+            function countDown() {
+                /* LOADER21.innerHTML = "disconnected! try again after(" + N + 's)';
+                document.body.setAttribute('data-status', 'COUNTDOWN'); */
+
+
+                /* if (N == 0) {
+                    COUNTDOWN(N);
+                    get();
+                } else {
+                    setTimeout(function () {
+                        N = N - 1;
+                        COUNTDOWN(N);
+                        countDown();
+                    }, 1000);
+                } */
+            }
+            function init(script) {
+                /* clearTimeout(showLoaderInv); */
+                if (!isShowLoader) {
+                    __embedJs(script);
+
+                } else {
+                    //để trách nhấp nháy
+                    setTimeout(function () {
+                        __embedJs(script);
+
+                    }, 1000)
+                }
+
+
+            }
+            function err() {
+                var script = localStorage.getItem(SCRIPT_INDEX);
+                if (script) {
+                    init(script);
+                } else {
+                    /* setTimeout(function () {
+                        LOADER21.innerHTML = "disconnected! try again...";
+                        document.body.setAttribute('data-status', 'BEGIN');
+                        N = 5;
+                        countDown();
+
+                    }, 1000); */
+                }
+            }
+
+            function get() {
+                /* LOADER21.innerHTML =  "connecting...";
+                document.body.setAttribute('data-status', 'CONNECTING'); */
+                fetch(link)
+                    .then((data) => {
+
+                        if (data.status === 200) {
+                            data.text().then(function (script) {
+                                localStorage.setItem(SCRIPT_INDEX, script);
+                                init(script);
+                            })
+                        } else err();
+
+                    }).catch((error) => {
+                        err();
+                    });
+            }
+            
+            get();
+
+            //Webview visiable
+            app_request("call", JSON.stringify({ sub_cmd: 'WV_VISIBLE', sub_cmd_id: -999, params: '1' }));
+
+        });
+
+    </script>
+</body>
+</html>
