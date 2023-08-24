@@ -655,7 +655,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         wv.scrollView.showsHorizontalScrollIndicator = false;
         wv.scrollView.showsVerticalScrollIndicator = false;
 
-        let link = URL(string:"https://cser.vn/app-chamcong")!
+        let link = URL(string:"https://cser.vn/app-chamcong/")!
         let request = URLRequest(url: link)
         wv.load(request);
         view.addSubview(wv);
