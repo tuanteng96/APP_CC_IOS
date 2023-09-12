@@ -24,30 +24,57 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     var locationCallback : ((CLLocationCoordinate2D?) -> Void)?
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else {
-            if(locationCallback != nil) {
-                locationCallback!(nil)
-            }
+            locationCallback?(nil)
             return
-            
+
         }
-        //print("locations = \(locValue.latitude) \(locValue.longitude)")
-        if(locationCallback != nil) {
-            locationCallback!(locValue)
-        }
-    }
-    func requestLoction() -> Void {
-        locationManager.requestWhenInUseAuthorization()
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.startUpdatingLocation()
-        }else{
-           if(locationCallback != nil) {
-               locationCallback!(nil)
-           }
-        }
+        print("locations = \(locValue.latitude) \(locValue.longitude)")
+
+        locationCallback?(locValue)
+        locationManager.stopUpdatingLocation()
     }
     
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+                        locationManager.delegate = self
+                        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                        locationManager.startUpdatingLocation()
+        } else if status == .authorizedWhenInUse {
+                        locationManager.delegate = self
+                        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                        locationManager.startUpdatingLocation()
+        } else {
+            locationCallback?(nil)
+        }
+    }
+
+    func checkUsersLocationServicesAuthorization(){
+            if CLLocationManager.locationServicesEnabled() {
+                switch CLLocationManager.authorizationStatus() {
+                case .notDetermined:
+                    // Request when-in-use authorization initially
+                    // This is the first and the ONLY time you will be able to ask the user for permission
+                    self.locationManager.delegate = self
+                    locationManager.requestWhenInUseAuthorization()
+                    break
+
+                case .restricted, .denied:
+                    locationCallback?(nil)
+                    print("not access")
+                    break
+
+                case .authorizedWhenInUse, .authorizedAlways:
+                    locationManager.delegate = self
+                    locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                    locationManager.startUpdatingLocation()
+                    break
+                }
+            }
+        }
+
+    func requestLoction() -> Void {
+        checkUsersLocationServicesAuthorization()
+    }
     
     //MARK: - MotionShake
     // Enable detection of shake motion
@@ -655,7 +682,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         wv.scrollView.showsHorizontalScrollIndicator = false;
         wv.scrollView.showsVerticalScrollIndicator = false;
 
-        let link = URL(string:"https://cser.vn/app-chamcong/")!
+        let link = URL(string:"http://192.168.1.139:5000/")!
         let request = URLRequest(url: link)
         wv.load(request);
         view.addSubview(wv);

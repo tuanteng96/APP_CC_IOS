@@ -419,12 +419,28 @@ class App21 : NSObject
     }
     
     //MARK: - GET_LOCATION
-    @objc func GET_LOCATION(result: Result) -> Void
-    {
-        result.success = true
-        self.App21Result(result: result)
-    }
-    
+        @objc func GET_LOCATION(result: Result) -> Void
+        {
+            caller.locationCallback = {(loc: CLLocationCoordinate2D?) in
+                if(loc != nil)
+                {
+                    let d: [String: Double] = [
+                        "latitude": loc!.latitude,
+                        "longitude": loc!.longitude
+                    ]
+                    
+                    result.data = JSON(d)
+                    result.success = true
+                } else {
+                    result.success = false
+                    result.data = ""
+                    result.error = "Vui lòng bật định vị"
+                }
+                self.App21Result(result: result);
+            }
+            caller.requestLoction()
+        }
+
     //MARK: - OPEN_QRCODE
     @objc func OPEN_QRCODE(result: Result) -> Void
     {

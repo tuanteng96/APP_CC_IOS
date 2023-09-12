@@ -1,6 +1,0 @@
-framework module Pods_ezschamcong {
-  umbrella header "Pods-ezschamcong-umbrella.h"
-
-  export *
-  module * { export * }
-}

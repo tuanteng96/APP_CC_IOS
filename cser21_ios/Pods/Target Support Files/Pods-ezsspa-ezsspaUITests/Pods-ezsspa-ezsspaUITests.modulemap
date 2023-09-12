@@ -1,0 +1,6 @@
+framework module Pods_ezsspa_ezsspaUITests {
+  umbrella header "Pods-ezsspa-ezsspaUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
