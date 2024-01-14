@@ -12,7 +12,9 @@ import Firebase
 import MapKit
 import CoreLocation
 import AVFoundation
-class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognizerDelegate,CLLocationManagerDelegate ,AVAudioRecorderDelegate   {
+import SystemConfiguration.CaptiveNetwork
+
+class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognizerDelegate,CLLocationManagerDelegate ,AVAudioRecorderDelegate, WKNavigationDelegate   {
 
     let HTML_EMBED = "embed21"
     let domain = "https://cser.vn/";
@@ -620,6 +622,16 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         
     }
     
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        print("Web content process terminated. Reloading...")
+        webView.reload()
+        self.dismiss(animated: false)
+        let secondViewController = self.storyboard?.instantiateViewController(withIdentifier: "Main") as! ViewController
+        secondViewController.modalPresentationStyle = .fullScreen
+                // Present the view controller modally
+                self.present(secondViewController, animated: false, completion: nil)
+    }
+    
     //MARK: - ScanQrCode
     @objc func onQrCode(notification: Notification)
     {
@@ -667,39 +679,39 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification , object:nil)
         
         //DEV OPEN
-        let webConfiguration = WKWebViewConfiguration();
-        let h = view.bounds.height ;//- mtop
-        let frm = CGRect(x:0 , y:0, width: view.bounds.width, height: h)
-        webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "local")
-        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "js")
-        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "app21")
-        wv = WKWebView(frame: frm, configuration: webConfiguration);
-        wv.configuration.userContentController.add(self, name: "IOS")
-        wv.isUserInteractionEnabled = true;
-        wv.scrollView.isScrollEnabled = false;
-        wv.scrollView.bounces = false;
-        wv.scrollView.showsHorizontalScrollIndicator = false;
-        wv.scrollView.showsVerticalScrollIndicator = false;
-
-        let link = URL(string:"http://192.168.1.140:5000/")!
-        let request = URLRequest(url: link)
-        wv.load(request);
-        view.addSubview(wv);
+//        let webConfiguration = WKWebViewConfiguration();
+//        let h = view.bounds.height ;//- mtop
+//        let frm = CGRect(x:0 , y:0, width: view.bounds.width, height: h)
+//        webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+//        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "local")
+//        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "js")
+//        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "app21")
+//        wv = WKWebView(frame: frm, configuration: webConfiguration);
+//        wv.configuration.userContentController.add(self, name: "IOS")
+//        wv.isUserInteractionEnabled = true;
+//        wv.scrollView.isScrollEnabled = false;
+//        wv.scrollView.bounces = false;
+//        wv.scrollView.showsHorizontalScrollIndicator = false;
+//        wv.scrollView.showsVerticalScrollIndicator = false;
+//
+//        let link = URL(string:"http://192.168.2.100:5001/")!
+//        let request = URLRequest(url: link)
+//        wv.load(request);
+//        view.addSubview(wv);
         // DEV OPEN
         
         //wv.scrollView.isScrollEnabled = false;
         
         if #available(iOS 11.0, *) {
             // DEV HIDDEN
-            //ios11()
+            ios11()
             // DEV HIDDEN
             wv.scrollView.contentInsetAdjustmentBehavior = .never
             //UIApplication.shared.statusBarUIView?.backgroundColor = #colorLiteral(red: 0.5137254902, green: 0.6862745098, blue: 0.1176470588, alpha: 1)
             UIApplication.shared.statusBarUIView?.isHidden = true
         }else{
             // DEV HIDDEN
-            //ios10()
+            ios10()
             // DEV HIDDEN
             //UIApplication.shared.statusBarUIView?.backgroundColor = #colorLiteral(red: 0.5137254902, green: 0.6862745098, blue: 0.1176470588, alpha: 1)
             UIApplication.shared.statusBarUIView?.isHidden = true

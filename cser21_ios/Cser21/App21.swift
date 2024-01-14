@@ -203,6 +203,8 @@ class App21 : NSObject
     }
     
     
+    
+    
     //MARK: - LOCATION
     @objc func LOCATION(result: Result) -> Void {
         /*
@@ -300,7 +302,12 @@ class App21 : NSObject
        
     }
     
-    
+    @objc func GET_NETWORK_TYPE (result: Result) -> Void
+    {
+        result.data = "NETWORK TYPE";
+        result.success = true;
+        App21Result(result: result);
+    }
 
     //MARK: - GET_DOWNLOADED
     @objc func GET_DOWNLOADED(result: Result) -> Void
