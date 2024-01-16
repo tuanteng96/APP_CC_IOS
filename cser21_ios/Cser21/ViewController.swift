@@ -23,16 +23,16 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     
     //MARK: - Location
     let locationManager = CLLocationManager()
-    var locationCallback : ((CLLocationCoordinate2D?) -> Void)?
+    var locationCallback : ((CLLocationCoordinate2D?,  CLAuthorizationStatus?) -> Void)?
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else {
-            locationCallback?(nil)
+            locationCallback?(nil,nil)
             return
 
         }
         print("locations = \(locValue.latitude) \(locValue.longitude)")
 
-        locationCallback?(locValue)
+        locationCallback?(locValue,nil)
         locationManager.stopUpdatingLocation()
     }
     
@@ -41,12 +41,14 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
                         locationManager.delegate = self
                         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
                         locationManager.startUpdatingLocation()
+            locationCallback?(nil, status)
         } else if status == .authorizedWhenInUse {
                         locationManager.delegate = self
                         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
                         locationManager.startUpdatingLocation()
+            locationCallback?(nil, status)
         } else {
-            locationCallback?(nil)
+            locationCallback?(nil, status)
         }
     }
 
@@ -59,9 +61,10 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
                     self.locationManager.delegate = self
                     locationManager.requestWhenInUseAuthorization()
                     break
+                    
 
                 case .restricted, .denied:
-                    locationCallback?(nil)
+                    locationCallback?(nil,CLLocationManager.authorizationStatus())
                     print("not access")
                     break
 
@@ -78,6 +81,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         checkUsersLocationServicesAuthorization()
     }
     
+        
     //MARK: - MotionShake
     // Enable detection of shake motion
     var motionShakeCallback : ((UIEvent.EventSubtype,UIEvent?) -> Void)?
@@ -98,12 +102,8 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     
     
     //
-    @IBOutlet weak var uv: UIWebView!
+    @IBOutlet weak var wv: WKWebView!
     
-    //@IBOutlet weak var wv: WKWebView!
-    var wv: WKWebView!
-    
-    var os10:Bool = false;
     
     let mtop = CGFloat(20);
     
@@ -197,7 +197,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     }
     func StrSize() -> String
     {
-        let s = os10 ? uv.bounds.size : wv.bounds.size
+        let s =  wv.bounds.size
         let statusBarHeight = UIApplication.shared.statusBarFrame.height
         return "{\"width\":" + String(describing: s.width) + ",\"height\":" + String(describing: s.height - statusBarHeight ) + "}"
     }
@@ -226,7 +226,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     @objc func onTap(g: UITapGestureRecognizer) {
         
         var value:String = "";
-        value += "{\"point\":" + StrPoint(Point: g.location(in: os10 ? uv : wv)) ;
+        value += "{\"point\":" + StrPoint(Point: g.location(in:  wv)) ;
         value += ",\"size\":" + StrSize();
         value += ",\"state\":" + StrGestureState(state: g.state);
         value += "}";
@@ -244,7 +244,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     }
     @objc func onRotation(g: UIRotationGestureRecognizer) {
         var value:String = "";
-        value += "{\"point\":" + StrPoint(Point: g.location(in: os10 ? uv : wv)) ;
+        value += "{\"point\":" + StrPoint(Point: g.location(in:  wv)) ;
         value += ",\"rotation\":" + String(describing: g.rotation);
         value += ",\"velocity\":" + String(describing: g.velocity);
         value += ",\"size\":" + StrSize();
@@ -254,9 +254,9 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     }
     @objc func onPan(g: UIPanGestureRecognizer) {
         var value:String = "";
-        value += "{\"point\":" + StrPoint(Point: g.location(in: os10 ? uv : wv)) ;
-        value += ",\"translation\":" + StrPoint(Point: g.translation(in: os10 ? uv : wv));
-        value += ",\"velocity\":" + StrPoint(Point: g.velocity(in: os10 ? uv : wv));
+        value += "{\"point\":" + StrPoint(Point: g.location(in:  wv)) ;
+        value += ",\"translation\":" + StrPoint(Point: g.translation(in:  wv));
+        value += ",\"velocity\":" + StrPoint(Point: g.velocity(in:  wv));
         value += ",\"size\":" + StrSize();
         value += ",\"state\":" + StrGestureState(state: g.state);
         value += "}";
@@ -264,9 +264,9 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     }
     @objc func onEPan(g: UIScreenEdgePanGestureRecognizer) {
         var value:String = "";
-        value += "{\"point\":" + StrPoint(Point: g.location(in: os10 ? uv : wv)) ;
-        value += ",\"translation\":" + StrPoint(Point: g.translation(in: os10 ? uv : wv));
-        value += ",\"velocity\":" + StrPoint(Point: g.velocity(in: os10 ? uv : wv));
+        value += "{\"point\":" + StrPoint(Point: g.location(in:  wv)) ;
+        value += ",\"translation\":" + StrPoint(Point: g.translation(in:  wv));
+        value += ",\"velocity\":" + StrPoint(Point: g.velocity(in:  wv));
         value += ",\"size\":" + StrSize();
         value += ",\"state\":" + StrGestureState(state: g.state);
         value += "}";
@@ -274,7 +274,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     }
     @objc func onSwipe(g: UISwipeGestureRecognizer) {
         var value:String = "";
-        value += "{\"point\":" + StrPoint(Point: g.location(in: os10 ? uv : wv)) ;
+        value += "{\"point\":" + StrPoint(Point: g.location(in:  wv)) ;
         value += ",\"direction\":" + String(describing: g.direction.rawValue);
         value += ",\"size\":" + StrSize();
         value += ",\"state\":" + StrGestureState(state: g.state);
@@ -283,7 +283,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     }
     @objc func onLongpress(g: UILongPressGestureRecognizer) {
         var value:String = "";
-        value += "{\"point\":" + StrPoint(Point: g.location(in: os10 ? uv : wv)) ;
+        value += "{\"point\":" + StrPoint(Point: g.location(in:  wv)) ;
         value += ",\"size\":" + StrSize();
         value += ",\"state\":" + StrGestureState(state: g.state);
         value += "}";
@@ -292,7 +292,6 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
-    
     
     func getKey(keyName: String,value: String) -> String {
         let defaults = UserDefaults.standard
@@ -347,14 +346,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     //MARK: - evalJs
     func evalJs(str: String)
     {
-        if(os10){
-            //uv.loadRequest(<#T##request: URLRequest##URLRequest#>)("app_response('\(cmd)','\(value)',true)",completionHandler: nil)
-            //let str:String = "javascript:app_response('\(cmd)','\(value)',true);";
-            uv.stringByEvaluatingJavaScript(from: str)
-        }else{
-            wv.evaluateJavaScript(str,completionHandler: nil)
-        }
-        
+        wv.evaluateJavaScript(str,completionHandler: nil)
     }
     
     var app21: App21? = nil
@@ -428,74 +420,44 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         Do(cmd: cmd,value: value)
     }
     
+
     
-    func ios10() {
-        //always set 0
-        //IconBadgeNumber(strNum: "0");
-        //Javascript
-        //uv.configuration.userContentController.add(self, name: "IOS")
+    func setUpWebView()  {
         
+        let webConfiguration = WKWebViewConfiguration();
+       
+        let frm = CGRect(x:0 , y:0, width: view.bounds.width, height: view.bounds.height)
+        //app21: handler file local
+        webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+        webConfiguration.setValue(true, forKey: "_allowUniversalAccessFromFileURLs")
+        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "local")
+        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "js")
+        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "app21")
+        //
         
-        uv.scrollView.decelerationRate = UIScrollView.DecelerationRate.normal;
-        //CGSize viewSize = self.view.frame.size
-        uv.window?.sizeToFit()
-        //Event
-        //#
-        let evt_tap = UITapGestureRecognizer(target: self , action: #selector(onTap))
-        evt_tap.delegate = self
-        evt_tap.numberOfTapsRequired = 1
-        uv.addGestureRecognizer(evt_tap)
-        //#
-        let evt_pinch = UIPinchGestureRecognizer(target: self , action: #selector(onPinch))
-        evt_pinch.delegate = self
-        uv.addGestureRecognizer(evt_pinch)
-        //#
-        let evt_Rotation = UIRotationGestureRecognizer(target: self , action: #selector(onRotation))
-        evt_Rotation.delegate = self
-        uv.addGestureRecognizer(evt_Rotation)
-        //#
-        let evt_Pan = UIPanGestureRecognizer(target: self , action: #selector(onPan))
-        evt_Pan.delegate = self
-        uv.addGestureRecognizer(evt_Pan)
-        //#
-        let evt_Epan = UIScreenEdgePanGestureRecognizer(target: self , action: #selector(onEPan))
-        evt_Epan.delegate = self
-        uv.addGestureRecognizer(evt_Epan)
-        //#
-        let evt_Swipe = UISwipeGestureRecognizer(target: self , action: #selector(onSwipe))
-        evt_Swipe.delegate = self
-        uv.addGestureRecognizer(evt_Swipe)
-        //#
-        let evt_Longpress = UILongPressGestureRecognizer(target: self , action: #selector(onLongpress))
-        evt_Longpress.delegate = self
-        uv.addGestureRecognizer(evt_Longpress)
+        wv = WKWebView(frame: frm, configuration: webConfiguration);
+        wv.navigationDelegate = self
+        //setBackground(params: nil);
+        //view.backgroundColor = bg;
         
+        wv.scrollView.contentInsetAdjustmentBehavior = .never
         
-        //UI
-        
-        // Do any additional setup after loading the view, typically from a nib.
-        
-        // load embed.html
-        if let path = Bundle.main.path(forResource: HTML_EMBED , ofType: "html"){
-            let fm = FileManager()
-            let exists = fm.fileExists(atPath: path)
-            if(exists){
-                let c = fm.contents(atPath: path)
-                let cString = NSString(data: c!, encoding: String.Encoding.utf8.rawValue)
-                
-                let url = URL(string: domain)
-                
-                var html:String = "<st";
-                html +=  cString! as String
-                uv.loadHTMLString(html, baseURL: url)
-            }
-        }
-    }
-    
-    func ios11()  {
         //Javascript
         wv.configuration.userContentController.add(self, name: "IOS")
         wv.scrollView.decelerationRate = UIScrollView.DecelerationRate.normal;
+        
+        
+        
+        view.addSubview(wv);
+        wv.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    wv.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                    view.trailingAnchor.constraint(equalTo: wv.trailingAnchor),
+                    wv.topAnchor.constraint(equalTo: view.topAnchor),
+                    view.bottomAnchor.constraint(equalTo: wv.bottomAnchor)
+                ])
+        wv.backgroundColor = UIColor.white;
+  
         
         //CGSize viewSize = self.view.frame.size
         
@@ -559,46 +521,10 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
                 wv.alpha = 1
             }
         }
-    }
-    
-    //MARK: - loadView
-    override func loadView() {
-       
-        super.loadView()
         
-        if #available(iOS 11.0, *) {
-            // or use some work around
-            let webConfiguration = WKWebViewConfiguration();
-            // let bg = UIColor(colorWithHaxValue: colorBrand);
-            let h = view.bounds.height ;//- mtop
-            let frm = CGRect(x:0 , y:0, width: view.bounds.width, height: h)
-            //app21: handler file local
-            webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-            webConfiguration.setValue(true, forKey: "_allowUniversalAccessFromFileURLs")
-            webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "local")
-            webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "js")
-            webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "app21")
-            //
-            
-            wv = WKWebView(frame: frm, configuration: webConfiguration);
-            
-            //setBackground(params: nil);
-            //view.backgroundColor = bg;
-            view.addSubview(wv);
-            wv.backgroundColor = UIColor.white;
-            wv.isHidden = true;
-            //wv.backgroundColor = bg;
-            os10 = false;
-            
-            //
-            
-            
-        } else {
-            os10 = true;
-            uv.delegate = self
-        }
+                
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification , object:nil)
         
-        //
         NotificationCenter.default.addObserver(self,
         selector: #selector(applicationDidBecomeActive),
         name: UIApplication.didBecomeActiveNotification,
@@ -616,10 +542,6 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         NotificationCenter.default.addObserver(self, selector: #selector(onNotificationClick) , name: NSNotification.Name(rawValue: "NotificationClick"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(onQrCode) , name: NSNotification.Name(rawValue: "QRCODE"), object: nil)
-        /*
-         * font
-         */
-        
     }
     
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
@@ -651,6 +573,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     //MARK: - DidBecomeActive
     @objc func applicationDidBecomeActive()
     {
+       
         evalJs(str: "AppResume({\"sourceIOS\":\"BecomeActive\"})")
     }
     
@@ -676,48 +599,16 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification , object:nil)
         
-        //DEV OPEN
-//        let webConfiguration = WKWebViewConfiguration();
-//        let h = view.bounds.height ;//- mtop
-//        let frm = CGRect(x:0 , y:0, width: view.bounds.width, height: h)
-//        webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-//        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "local")
-//        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "js")
-//        webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "app21")
-//        wv = WKWebView(frame: frm, configuration: webConfiguration);
-//        wv.configuration.userContentController.add(self, name: "IOS")
-//        wv.isUserInteractionEnabled = true;
-//        wv.scrollView.isScrollEnabled = false;
-//        wv.scrollView.bounces = false;
-//        wv.scrollView.showsHorizontalScrollIndicator = false;
-//        wv.scrollView.showsVerticalScrollIndicator = false;
-//
-//        let link = URL(string:"http://192.168.2.100:5001/")!
-//        let request = URLRequest(url: link)
-//        wv.load(request);
-//        view.addSubview(wv);
-        // DEV OPEN
+        setUpWebView()
         
-        //wv.scrollView.isScrollEnabled = false;
+        UIApplication.shared.statusBarUIView?.backgroundColor = UIColor.white
+        UIApplication.shared.statusBarUIView?.isHidden = true
         
-        if #available(iOS 11.0, *) {
-            // DEV HIDDEN
-            ios11()
-            // DEV HIDDEN
-            wv.scrollView.contentInsetAdjustmentBehavior = .never
-            //UIApplication.shared.statusBarUIView?.backgroundColor = #colorLiteral(red: 0.5137254902, green: 0.6862745098, blue: 0.1176470588, alpha: 1)
-            UIApplication.shared.statusBarUIView?.isHidden = true
-        }else{
-            // DEV HIDDEN
-            ios10()
-            // DEV HIDDEN
-            //UIApplication.shared.statusBarUIView?.backgroundColor = #colorLiteral(red: 0.5137254902, green: 0.6862745098, blue: 0.1176470588, alpha: 1)
-            UIApplication.shared.statusBarUIView?.isHidden = true
-        }
-        UIApplication.shared.statusBarUIView?.backgroundColor = .clear
+                
+//        UIApplication.shared.statusBarUIView?.backgroundColor = UIColor.white
     }
+         
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -729,14 +620,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     }
     
     func JS(cmd: String, value: String){
-        if(os10){
-            //uv.loadRequest(<#T##request: URLRequest##URLRequest#>)("app_response('\(cmd)','\(value)',true)",completionHandler: nil)
-            let str:String = "javascript:app_response('\(cmd)','\(value)',true);";
-            uv.stringByEvaluatingJavaScript(from: str)
-        }else{
-            wv.evaluateJavaScript("app_response('\(cmd)','\(value)',true)",completionHandler: nil)
-        }
-        
+        wv.evaluateJavaScript("app_response('\(cmd)','\(value)',true)",completionHandler: nil)
     }
     
     
@@ -748,9 +632,6 @@ extension ViewController: UIWebViewDelegate
     //for os10
     internal func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
         //webView.stringByEvaluatingJavaScriptFromString("something = 42")
-        if(!os10) {
-            return true;
-        }
         let str = String(describing: request)
         let arr = str.components(separatedBy:"?")
         if(arr.count == 2)

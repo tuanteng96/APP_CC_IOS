@@ -12,7 +12,7 @@ import AVFoundation
 import Photos
 import AudioToolbox
 
-class App21 : NSObject
+class App21 : NSObject, CLLocationManagerDelegate
 {
     var caller:  ViewController
     init(viewController: ViewController)
@@ -213,7 +213,7 @@ class App21 : NSObject
         loc21.app21 = self
         loc21.run(result: result)
         */
-        caller.locationCallback = {(loc: CLLocationCoordinate2D?) in
+        caller.locationCallback = {(loc: CLLocationCoordinate2D?, status: CLAuthorizationStatus? ) in
             result.success = loc != nil
             if(loc != nil)
             {
@@ -304,10 +304,35 @@ class App21 : NSObject
     
     @objc func GET_NETWORK_TYPE (result: Result) -> Void
     {
-        result.data = "NETWORK TYPE";
-        result.success = true;
-        App21Result(result: result);
+        caller.locationCallback = {(loc: CLLocationCoordinate2D?, status: CLAuthorizationStatus? ) in
+            if(loc != nil)
+            {
+                var wifiInfo = WiFiManager.getWiFiInfo()
+                result.data = JSON(wifiInfo)
+               
+                if  wifiInfo.isEmpty {
+                    result.data = "NO WIFI"
+                    result.success = true
+                } else {
+                    result.success = true
+                    result.data = JSON(wifiInfo)
+                    print("RESULT WIFI: \(String(describing: result.data))")
+                }
+                self.App21Result(result: result);
+            
+            } else {
+                if(status == .restricted || status == .denied){
+                    result.success = true
+                    result.data = "It looks like you've declined location permission. Please grant permission in App Settings to use this feature."
+                    self.App21Result(result: result);
+                }
+            }
+           
+        }
+        caller.requestLoction()
     }
+    
+    
 
     //MARK: - GET_DOWNLOADED
     @objc func GET_DOWNLOADED(result: Result) -> Void
@@ -428,7 +453,7 @@ class App21 : NSObject
     //MARK: - GET_LOCATION
         @objc func GET_LOCATION(result: Result) -> Void
         {
-            caller.locationCallback = {(loc: CLLocationCoordinate2D?) in
+            caller.locationCallback = {(loc: CLLocationCoordinate2D?, status: CLAuthorizationStatus? ) in
                 if(loc != nil)
                 {
                     let d: [String: Double] = [
@@ -800,4 +825,3 @@ class NOTI_DATA_PARAMS : Codable
 {
     var reset: Bool? = false
 }
-
