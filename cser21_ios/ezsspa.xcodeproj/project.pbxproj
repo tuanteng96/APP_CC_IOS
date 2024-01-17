@@ -35,7 +35,7 @@
 		34B7779C241B82EB00787FE3 /* Cser21Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B7779B241B82EB00787FE3 /* Cser21Tests.swift */; };
 		34B777A7241B82EB00787FE3 /* Cser21UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B777A6241B82EB00787FE3 /* Cser21UITests.swift */; };
 		B78D29502A9706E80017C1E4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */; };
-		B7CC7AA32B54C77600E268BD /* WiffiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CC7AA22B54C77600E268BD /* WiffiManager.swift */; };
+		B7CC7AA52B57718700E268BD /* WiffiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CC7AA42B57718700E268BD /* WiffiManager.swift */; };
 		EF94C6E9277D500E0015CCA5 /* QrCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF94C6E8277D500E0015CCA5 /* QrCodeController.swift */; };
 /* End PBXBuildFile section */
 
@@ -122,7 +122,7 @@
 		A50A63D593A3F7F1D6B4319A /* Pods-ezschamcong.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezschamcong.debug.xcconfig"; path = "Target Support Files/Pods-ezschamcong/Pods-ezschamcong.debug.xcconfig"; sourceTree = "<group>"; };
 		B3DAC92D562CD5D441388F3D /* Pods-ezschamcongTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezschamcongTests.release.xcconfig"; path = "Target Support Files/Pods-ezschamcongTests/Pods-ezschamcongTests.release.xcconfig"; sourceTree = "<group>"; };
 		B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
-		B7CC7AA22B54C77600E268BD /* WiffiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WiffiManager.swift; path = "../../../../../Documents/Zalo Received Files/WiffiManager.swift"; sourceTree = "<group>"; };
+		B7CC7AA42B57718700E268BD /* WiffiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WiffiManager.swift; sourceTree = "<group>"; };
 		BA2F3A18315F89ED22477C22 /* Pods-ezsspa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezsspa.debug.xcconfig"; path = "Target Support Files/Pods-ezsspa/Pods-ezsspa.debug.xcconfig"; sourceTree = "<group>"; };
 		BD7EF7873BD145C011259678 /* Pods_ezsspa_ezsspaUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ezsspa_ezsspaUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5230BF6334A79D88B4AE010 /* Pods-Cser2022Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cser2022Tests.release.xcconfig"; path = "Target Support Files/Pods-Cser2022Tests/Pods-Cser2022Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -231,7 +231,7 @@
 		34B77785241B82EA00787FE3 /* Cser21 */ = {
 			isa = PBXGroup;
 			children = (
-				B7CC7AA22B54C77600E268BD /* WiffiManager.swift */,
+				B7CC7AA42B57718700E268BD /* WiffiManager.swift */,
 				B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */,
 				18D1BE3F24558950001B95F7 /* fonts */,
 				183E4580244AEBD700E6AB75 /* embed21.html */,
@@ -545,7 +545,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18AB495824505FB2005598C2 /* WebControl.swift in Sources */,
-				B7CC7AA32B54C77600E268BD /* WiffiManager.swift in Sources */,
+				B7CC7AA52B57718700E268BD /* WiffiManager.swift in Sources */,
 				181663FE243CF2930097A451 /* ImageUtil.swift in Sources */,
 				18424FBC2425C8D1006D6B63 /* App21.swift in Sources */,
 				18DED9D1243D7745001771B2 /* Noti21.swift in Sources */,
