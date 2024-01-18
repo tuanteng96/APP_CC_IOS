@@ -464,6 +464,7 @@ class App21 : NSObject, CLLocationManagerDelegate
                     result.data = JSON(d)
                     result.success = true
                 } else {
+                    print("Vui lòng bật định vị sss")
                     result.success = false
                     result.data = ""
                     result.error = "Vui lòng bật định vị"

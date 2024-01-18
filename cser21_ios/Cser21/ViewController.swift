@@ -41,12 +41,12 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
                         locationManager.delegate = self
                         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
                         locationManager.startUpdatingLocation()
-            locationCallback?(nil, status)
+            locationCallback?(manager.location?.coordinate, status)
         } else if status == .authorizedWhenInUse {
                         locationManager.delegate = self
                         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
                         locationManager.startUpdatingLocation()
-            locationCallback?(nil, status)
+            locationCallback?(manager.location?.coordinate, status)
         } else {
             locationCallback?(nil, status)
         }
@@ -497,20 +497,34 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         
         // Do any additional setup after loading the view, typically from a nib.
         
+        //DEV OPEN
+//        wv.isUserInteractionEnabled = true;
+//        wv.scrollView.isScrollEnabled = false;
+//        wv.scrollView.bounces = false;
+//        wv.scrollView.showsHorizontalScrollIndicator = false;
+//        wv.scrollView.showsVerticalScrollIndicator = false;
+//
+//        let link = URL(string:"http://192.168.2.100:5001/")!
+//        let request = URLRequest(url: link)
+//        wv.load(request);
+//        view.addSubview(wv);
+        // DEV OPEN
+        
         // load embed.html
+        // DEV HIDDEN
         if let path = Bundle.main.path(forResource: HTML_EMBED, ofType: "html"){
             let fm = FileManager()
             let exists = fm.fileExists(atPath: path)
             if(exists){
                 let c = fm.contents(atPath: path)
                 let cString = NSString(data: c!, encoding: String.Encoding.utf8.rawValue)
-                
+
                 let url = URL(string: domain)
-                
+
                 var html:String = "";
                 html +=  cString! as String
-                
-                
+
+
                 if HTML_EMBED == "embed"{
                     wv.isHidden = false;
                     wv.loadHTMLString(html, baseURL: url);
@@ -521,7 +535,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
                 wv.alpha = 1
             }
         }
-        
+        // DEV HIDDEN
                 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification , object:nil)
         
