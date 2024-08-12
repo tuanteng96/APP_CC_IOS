@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://spa.ezs.vn/AppCore/assets/css/index.css" />
+    <link rel="stylesheet" href="https://spa1.ezs.vn/AppCore/assets/css/index.css" />
 
     <style type="text/css">
         *, ::after, ::before {
@@ -190,7 +190,7 @@
          */
         box(() => {
 
-            var link = 'https://spa.ezs.vn/AppCore/index.aspx';
+            var link = 'https://spa1.ezs.vn/AppCore/index.aspx';
             var N = 5;
             var isShowLoader = false;
             
@@ -231,7 +231,9 @@
                         err();
                     });
             }
+            
             get();
+            
 
             //Webview visiable
             app_request("call", JSON.stringify({ sub_cmd: 'WV_VISIBLE', sub_cmd_id: -999, params: '1' }));
