@@ -14,12 +14,38 @@ import CoreLocation
 import AVFoundation
 import SystemConfiguration.CaptiveNetwork
 
-class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognizerDelegate,CLLocationManagerDelegate ,AVAudioRecorderDelegate, WKNavigationDelegate   {
+class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognizerDelegate,CLLocationManagerDelegate ,AVAudioRecorderDelegate, WKNavigationDelegate, POSWIFIManagerDelegate   {
 
     let HTML_EMBED = "embed21"
     let domain = "https://cser.vn/";
     
     var qrCodeResult: Result = Result()
+    
+    //21/10/2024
+    //MARK: POSwifiConnectedToHost
+    
+    func poSwifiConnected(toHost host: String?, port: UInt16) -> Void
+    {
+        if(app21 == nil){
+            app21 = App21(viewController: self)
+        }
+        app21?.XPRINT_Connected(host: host, port: Int(port))
+    }
+    
+    func POSwifiConnectedToHost(toHost host: String?, port: UInt16) -> Void
+    {
+        
+    }
+    
+    private func POSwifiDisconnectWithError(error: String?) -> Void
+    {
+        if(app21 == nil){
+            app21 = App21(viewController: self)
+        }
+        app21?.XPrint_Error(err: error!)
+
+    }
+    //end 21/10/2024
     
     //MARK: - Location
     let locationManager = CLLocationManager()
@@ -618,6 +644,17 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         
         UIApplication.shared.statusBarUIView?.backgroundColor = UIColor.white
         UIApplication.shared.statusBarUIView?.isHidden = true
+        
+        //21/10/2024
+        //MARK: 21/10/2024
+        if(app21 == nil)
+        {
+            app21 = App21(viewController: self)
+        }
+        var ss = app21?.START_SCRIPT(result: Result()) ?? "";
+        //ss = "document.body.innerHTML='hihi'"; => test
+        wv.evaluateJavaScript(ss)
+        //end 21/10/2024
         
                 
 //        UIApplication.shared.statusBarUIView?.backgroundColor = UIColor.white

@@ -71,6 +71,7 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
+  - KeychainSwift (20.0.0)
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
     - nanopb/encode (= 1.30906.0)
@@ -83,6 +84,7 @@ DEPENDENCIES:
   - Alamofire
   - Firebase/Core
   - Firebase/Messaging
+  - KeychainSwift (~> 20.0)
 
 SPEC REPOS:
   trunk:
@@ -97,6 +99,7 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
+    - KeychainSwift
     - nanopb
     - PromisesObjC
     - Protobuf
@@ -113,10 +116,11 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
   GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
+  KeychainSwift: 0ce6a4d13f7228054d1a71bb1b500448fb2ab837
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Protobuf: 3724efa50cb2846d7ccebc8691c574e85fd74471
 
-PODFILE CHECKSUM: cbbf433edfb37333304fa7fc9ddc02150385a68c
+PODFILE CHECKSUM: 27bb261da510454b29890b6ebbb6d6cf8e4cb4d9
 
 COCOAPODS: 1.11.2

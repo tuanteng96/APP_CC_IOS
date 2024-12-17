@@ -11,6 +11,7 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 import AudioToolbox
+import KeychainSwift
 
 class App21 : NSObject, CLLocationManagerDelegate
 {
@@ -669,8 +670,21 @@ class App21 : NSObject, CLLocationManagerDelegate
     {
         result.success = true
         
+        let keychain = KeychainSwift()
+        
+        var deviceId = keychain.get("deviceId");
+        if(deviceId != nil) {
+            print("Đã có")
+        }
+        else {
+            let newDeviceId = UIDevice.current.identifierForVendor!.uuidString
+            keychain.set(newDeviceId, forKey: "deviceId")
+            deviceId = newDeviceId
+        }
+        
         var info = "IOS";
-        info += ",deviceId:" + UIDevice.current.identifierForVendor!.uuidString
+        info += ",deviceId:" + deviceId!
+        //info += ",deviceId:" + UIDevice.current.identifierForVendor!.uuidString
         info += ",systemName:" + UIDevice.current.systemName
         info += ",systemVersion:" + UIDevice.current.systemVersion
         info += ",localizedModel:" + UIDevice.current.localizedModel
@@ -753,6 +767,258 @@ class App21 : NSObject, CLLocationManagerDelegate
         App21Result(result: result);
 
     }
+    
+    //21/10/2024
+    //MARK: XPRINT
+    var xpz: XPZ? = nil;
+    @objc func downForPrint(url: String?) -> URL?
+    {
+        if(goc == nil)
+        {
+            goc = GetORCached();
+        }
+        
+        return goc?.downUrl(urlStr: url)!.absPath ;
+    }
+    
+    @objc func XPRINT_Connected(host: String?, port: Int)
+    {
+        if(xpz == nil)
+        {
+            xpz = XPZ();
+            xpz?.app21 = self;
+        }
+        xpz?.onConected(ip: host!, port: port)
+
+    }
+    @objc func XPrint_Error(err: String) -> Void
+    {
+        xpz?.onError(err: err)
+    }
+    
+    @objc func XPRINT_CLEAR(result: Result) -> Void
+    {
+        xpz?.clear();
+        result.success = true;
+        App21Result(result: result);
+    }
+    
+    @objc func XPRINT(result: Result) -> Void
+    {
+        if(xpz == nil)
+        {
+            xpz = XPZ();
+            xpz?.app21 = self;
+        }
+        
+        do
+        {
+            let data = (result.params?.data(using: .utf8));
+            if data != nil {
+                if let json = try? JSON(data: data!){
+                    var ipAddress: String? = nil;
+                    var pr: XPZParam? = nil;
+                    var port: Int? = nil;
+                    
+                    if(json["ipAddress"].exists())
+                    {
+                        ipAddress = json["ipAddress"].stringValue;
+                    }
+                    if(json["port"].exists())
+                    {
+                        port = json["port"].intValue;
+                    }
+
+                    if(port == nil || port == 0)
+                    {
+                        port = 9100;
+                    }
+                    
+                    let decoder = JSONDecoder()
+                    if(json["param"].exists())
+                    {
+                        let prStr = json["param"].rawString();
+                        let d1 = prStr!.data(using: .utf8)!;
+                        pr = try decoder.decode(XPZParam.self, from: d1)
+                    }
+                    
+                    
+                    
+                   
+                    if(ipAddress == nil)
+                    {
+                       throw Error21.runtimeError("ipAddress is null")
+                    }
+                    if(pr == nil)
+                    {
+                       throw Error21.runtimeError("param is null")
+                    }
+                    
+                    var items = pr!.items;
+                    for item in items!
+                    {
+                        if( item.self.imageUrl != nil)
+                        {
+                            item.self.imageLocalPath = downForPrint(url: item.self.imageUrl);
+                        }
+                    }
+                    
+                    
+                    xpz?.result = result;
+                    xpz?.printParam(ipAddress: ipAddress!, port: port!, param: pr!)
+                }
+            }
+        }catch
+        {
+            result.error = error.localizedDescription;
+            result.success = false;
+            App21Result(result: result);
+        }
+    }
+    
+    //MARK: STORE_TEXT
+    @objc func STORE_TEXT(result: Result) -> Void
+    {
+        do
+        {
+            let data = (result.params?.data(using: .utf8));
+            if data != nil {
+                if let json = try? JSON(data: data!){
+                    var name: String? = nil;
+                   
+                    let fileManager = FileManager.default
+                    
+                    
+                    if(json["name"].exists())
+                    {
+                        name = json["name"].stringValue;
+                    }
+                    
+                    if(name == nil)
+                    {
+                        throw Error21.runtimeError("name is null");
+                    }
+                    
+                    let fileName = "STORE_TEXT_" + name!;
+                    
+                    if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first{
+                        
+                        let fileUrl = dir.appendingPathComponent(fileName);
+                        if(json["value"].exists())
+                        {
+                            var value = json["value"].stringValue;
+                            try value.write(to: fileUrl, atomically: false, encoding:.utf8)
+                        }
+                        else{
+                            let text = try String(contentsOf: fileUrl, encoding: .utf8)
+                            result.data = JSON(text);
+                        }
+                        
+                    }
+                    
+                    
+                    result.success = true;
+                    App21Result(result: result);
+                }
+            }
+        }catch
+        {
+            result.error = error.localizedDescription;
+            result.success = false;
+            App21Result(result: result);
+        }
+    }
+    
+    //MARK: GET_OR_CACHED
+    var goc: GetORCached? = nil;
+    @objc func GET_OR_CACHED(result: Result) -> Void
+    {
+        
+
+        do
+        {
+            let data = (result.params?.data(using: .utf8))
+            if data != nil {
+                if let json = try? JSON(data: data!){
+                    let url: String? = json["url"].stringValue;
+                    var type = 0;
+                    var returnType = 0;
+                    
+                    if(json["type"].exists())
+                    {
+                        type = json["type"].intValue;
+                    }
+                    if(json["returnType"].exists())
+                    {
+                        returnType = json["returnType"].intValue;
+                    }
+                    
+                    if(url == nil || url!.isEmpty) {
+                        throw Error21.runtimeError("url is null");
+                        
+                    }
+                    
+                    if( goc == nil)
+                    {
+                        goc = GetORCached();
+                    }
+                    goc?.handle(url: url!, type: type, returnType: returnType, result: result, app21: self)
+                }
+            }
+
+        }
+        catch
+        {
+            result.error = error.localizedDescription;
+            result.success = false;
+            App21Result(result: result);
+        }
+        
+       
+
+
+        //let jo = try? JSONSerialization.jsonObject(with: data, options: [])
+
+        App21Result(result: result);
+
+    }
+    
+    //MARK: START_SCRIPT
+    @objc func START_SCRIPT(result: Result) -> String?
+    {
+        let name = "START_SCRIPT.js";
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        {
+            var path = dir.appendingPathComponent(name);
+            var js: String? = nil;
+            var text: String? = nil;
+            do
+            {
+                if(result.params ==  nil || result.params == "")
+                {
+                    text = try String(contentsOf: path, encoding: .utf8);
+                    result.data = JSON(text!);
+                }else{
+                    try result.params!.write(to: path, atomically: true, encoding: .utf8);
+                    result.data = JSON("saved")
+                }
+            }catch{
+                result.success = false;
+                App21Result(result: result);
+                return nil;
+            }
+            
+            result.success = true;
+            App21Result(result: result);
+            return text;
+            
+        }else{
+            result.success = false;
+            App21Result(result: result);
+        }
+        return nil;
+    }
+    //het 21/10/2024
     
 }
 
