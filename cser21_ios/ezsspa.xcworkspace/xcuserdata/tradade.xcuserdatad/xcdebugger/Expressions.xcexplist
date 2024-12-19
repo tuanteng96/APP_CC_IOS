@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "App21.XPRINT(result:):App21.swift">
+      </ContextState>
+      <ContextState
+         contextName = "App21.call(jsonStr:):App21.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "(String)jsonStr">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

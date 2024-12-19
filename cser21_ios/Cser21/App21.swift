@@ -36,6 +36,8 @@ class App21 : NSObject, CLLocationManagerDelegate
     //MARK: - App21Result
     func App21Result(result: Result) -> Void {
         do {
+           result.raw = nil;
+            
            let jsonEncoder = JSONEncoder()
            let jsonData = try jsonEncoder.encode(result)
            let json = String(data: jsonData, encoding: String.Encoding.utf8)
@@ -51,6 +53,7 @@ class App21 : NSObject, CLLocationManagerDelegate
         
     }
     
+    
     //MARK: - call
     func call(jsonStr: String) -> Void {
         //
@@ -64,6 +67,9 @@ class App21 : NSObject, CLLocationManagerDelegate
             result.sub_cmd = json!["sub_cmd"] as? String;
             result.sub_cmd_id = json!["sub_cmd_id"] as! Int;
             result.params = json!["params"] as? String;
+            
+            //2024/12/18
+            result.raw = jsonStr;
             
             
             //var selector = Selector(result.sub_cmd! + ":");
@@ -112,6 +118,21 @@ class App21 : NSObject, CLLocationManagerDelegate
         DispatchQueue.main.async { // Correct
             self.caller.changeStatusBarColor(params: result.params)
         }
+    }
+    
+    //MARK: - CHOOSE IMAGES
+    @objc func CHOOSE_IMAGES(result: Result) -> Void {
+        print(result)
+        result.success = true;
+        result.data = "data"
+        App21Result(result: result);
+    }
+    
+    //MARK: - CHOOSE FILES
+    @objc func CHOOSE_FILES(result: Result) -> Void {
+        result.success = true;
+        result.data = "data"
+        App21Result(result: result);
     }
     
     //MARK: - REBOOT
@@ -793,11 +814,21 @@ class App21 : NSObject, CLLocationManagerDelegate
     }
     @objc func XPrint_Error(err: String) -> Void
     {
+        if(xpz == nil)
+        {
+            xpz = XPZ();
+            xpz?.app21 = self;
+        }
         xpz?.onError(err: err)
     }
     
     @objc func XPRINT_CLEAR(result: Result) -> Void
     {
+        if(xpz == nil)
+        {
+            xpz = XPZ();
+            xpz?.app21 = self;
+        }
         xpz?.clear();
         result.success = true;
         App21Result(result: result);
@@ -810,10 +841,25 @@ class App21 : NSObject, CLLocationManagerDelegate
             xpz = XPZ();
             xpz?.app21 = self;
         }
-        
+        result.error = "KHONG_XU_LY";
         do
         {
-            let data = (result.params?.data(using: .utf8));
+            
+            var data = (result.params?.data(using: .utf8));
+            
+            if(data == nil)
+            {
+                if(result.params == nil)
+                {
+                    let dataRaw = result.raw?.data(using: .utf8);
+                    if let jsonRaw = try? JSON(data: dataRaw!){
+                        data  = try jsonRaw["params"].rawData();
+                        //data = (rawParams.data(using: .utf8));
+                        
+                    }
+                }
+            }
+            
             if data != nil {
                 if let json = try? JSON(data: data!){
                     var ipAddress: String? = nil;
@@ -865,15 +911,18 @@ class App21 : NSObject, CLLocationManagerDelegate
                     
                     
                     xpz?.result = result;
-                    xpz?.printParam(ipAddress: ipAddress!, port: port!, param: pr!)
+                    xpz?.printParam(ipAddress: ipAddress!, port: port!, param: pr!);
+                    result.error = nil;
+                    return;
                 }
             }
         }catch
         {
             result.error = error.localizedDescription;
             result.success = false;
-            App21Result(result: result);
         }
+        
+        App21Result(result: result);
     }
     
     //MARK: STORE_TEXT
@@ -1033,6 +1082,8 @@ class Result : NSObject {
     var sub_cmd: String? = ""
     var sub_cmd_id: Int = 0
     var params: String? = ""
+    //2024/12/18
+    var raw:String? = nil
     
     enum CodingKeys:String, CodingKey {
         case success
@@ -1092,3 +1143,5 @@ class NOTI_DATA_PARAMS : Codable
 {
     var reset: Bool? = false
 }
+
+
