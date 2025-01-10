@@ -120,8 +120,22 @@ class DownloadFileTask {
         } catch {
             print("Unable to load data: \(error)")
         }
+        return DownloadFileTask.toLocalSchemeUrl(to.absoluteString)
+    }
+    
+    func saveURL2(url: URL?, suffix: String) -> String
+    {
+        let to = filenameFrom(suffix: suffix);
+        do {
+            let d = try Data(contentsOf: url!)
+            try? d.write(to: to)
+        } catch {
+            print("Unable to load data: \(error)")
+        }
         return to.absoluteString
     }
+    
+
     
     
     static func replaceStartWith(str: String, startWidth: String, replace: String) -> String {

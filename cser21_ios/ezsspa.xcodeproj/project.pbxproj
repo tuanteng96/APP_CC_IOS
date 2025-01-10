@@ -34,13 +34,13 @@
 		34B77791241B82EB00787FE3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34B7778F241B82EB00787FE3 /* LaunchScreen.storyboard */; };
 		34B7779C241B82EB00787FE3 /* Cser21Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B7779B241B82EB00787FE3 /* Cser21Tests.swift */; };
 		34B777A7241B82EB00787FE3 /* Cser21UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B777A6241B82EB00787FE3 /* Cser21UITests.swift */; };
+		B72FD14A2D1A68020097D521 /* XPZ.m in Sources */ = {isa = PBXBuildFile; fileRef = B72FD1472D1A68020097D521 /* XPZ.m */; };
+		B72FD14B2D1A68020097D521 /* XPZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72FD1482D1A68020097D521 /* XPZ.swift */; };
+		B72FD14C2D1A68020097D521 /* X_GET_OR_CACHED.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72FD1492D1A68020097D521 /* X_GET_OR_CACHED.swift */; };
+		B72FD14F2D1A687D0097D521 /* libPrinterSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B72FD14E2D1A68680097D521 /* libPrinterSDK.a */; };
 		B78D29502A9706E80017C1E4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */; };
 		B7CC7AA52B57718700E268BD /* WiffiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CC7AA42B57718700E268BD /* WiffiManager.swift */; };
 		B7E2BD582CF856160087643F /* PrinterSDK in Resources */ = {isa = PBXBuildFile; fileRef = B7E2BD572CF856160087643F /* PrinterSDK */; };
-		B7E2BD5E2CF856520087643F /* X_GET_OR_CACHED.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E2BD5A2CF856510087643F /* X_GET_OR_CACHED.swift */; };
-		B7E2BD5F2CF856520087643F /* XPZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E2BD5B2CF856510087643F /* XPZ.swift */; };
-		B7E2BD602CF856520087643F /* XPZ.m in Sources */ = {isa = PBXBuildFile; fileRef = B7E2BD5C2CF856520087643F /* XPZ.m */; };
-		B7E2BD622CF8588F0087643F /* libPrinterSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7E2BD612CF858690087643F /* libPrinterSDK.a */; };
 		EF94C6E9277D500E0015CCA5 /* QrCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF94C6E8277D500E0015CCA5 /* QrCodeController.swift */; };
 /* End PBXBuildFile section */
 
@@ -126,14 +126,16 @@
 		9D27D813E3733BD426D5E409 /* Pods-ezsspa-ezsspaUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezsspa-ezsspaUITests.debug.xcconfig"; path = "Target Support Files/Pods-ezsspa-ezsspaUITests/Pods-ezsspa-ezsspaUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A50A63D593A3F7F1D6B4319A /* Pods-ezschamcong.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezschamcong.debug.xcconfig"; path = "Target Support Files/Pods-ezschamcong/Pods-ezschamcong.debug.xcconfig"; sourceTree = "<group>"; };
 		B3DAC92D562CD5D441388F3D /* Pods-ezschamcongTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezschamcongTests.release.xcconfig"; path = "Target Support Files/Pods-ezschamcongTests/Pods-ezschamcongTests.release.xcconfig"; sourceTree = "<group>"; };
+		B72FD1462D1A68020097D521 /* XPZ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPZ.h; path = ../../XPZ.h; sourceTree = "<group>"; };
+		B72FD1472D1A68020097D521 /* XPZ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPZ.m; path = ../../XPZ.m; sourceTree = "<group>"; };
+		B72FD1482D1A68020097D521 /* XPZ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XPZ.swift; path = ../../XPZ.swift; sourceTree = "<group>"; };
+		B72FD1492D1A68020097D521 /* X_GET_OR_CACHED.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = X_GET_OR_CACHED.swift; path = ../../X_GET_OR_CACHED.swift; sourceTree = "<group>"; };
+		B72FD14D2D1A684A0097D521 /* PrinterSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PrinterSDK; path = ../PrinterSDK; sourceTree = "<group>"; };
+		B72FD14E2D1A68680097D521 /* libPrinterSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPrinterSDK.a; path = ../PrinterSDK/libPrinterSDK.a; sourceTree = "<group>"; };
 		B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B7CC7AA42B57718700E268BD /* WiffiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WiffiManager.swift; sourceTree = "<group>"; };
 		B7E2BD572CF856160087643F /* PrinterSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PrinterSDK; path = ../../../../../Downloads/app_cc_ios/cser21_ios/Cser21/PrinterSDK; sourceTree = "<group>"; };
 		B7E2BD592CF856510087643F /* ezsspa-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ezsspa-Bridging-Header.h"; sourceTree = "<group>"; };
-		B7E2BD5A2CF856510087643F /* X_GET_OR_CACHED.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = X_GET_OR_CACHED.swift; path = ../../../../../Downloads/app_cc_ios/cser21_ios/Cser21/X_GET_OR_CACHED.swift; sourceTree = "<group>"; };
-		B7E2BD5B2CF856510087643F /* XPZ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XPZ.swift; path = ../../../../../Downloads/app_cc_ios/cser21_ios/Cser21/XPZ.swift; sourceTree = "<group>"; };
-		B7E2BD5C2CF856520087643F /* XPZ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPZ.m; path = ../../../../../Downloads/app_cc_ios/cser21_ios/Cser21/XPZ.m; sourceTree = "<group>"; };
-		B7E2BD5D2CF856520087643F /* XPZ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPZ.h; path = ../../../../../Downloads/app_cc_ios/cser21_ios/Cser21/XPZ.h; sourceTree = "<group>"; };
 		B7E2BD612CF858690087643F /* libPrinterSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPrinterSDK.a; path = Cser21/PrinterSDK/libPrinterSDK.a; sourceTree = "<group>"; };
 		BA2F3A18315F89ED22477C22 /* Pods-ezsspa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezsspa.debug.xcconfig"; path = "Target Support Files/Pods-ezsspa/Pods-ezsspa.debug.xcconfig"; sourceTree = "<group>"; };
 		BD7EF7873BD145C011259678 /* Pods_ezsspa_ezsspaUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ezsspa_ezsspaUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,7 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A012E0A014310AED75FD906 /* Pods_ezsspa.framework in Frameworks */,
-				B7E2BD622CF8588F0087643F /* libPrinterSDK.a in Frameworks */,
+				B72FD14F2D1A687D0097D521 /* libPrinterSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,10 +246,10 @@
 		34B77785241B82EA00787FE3 /* Cser21 */ = {
 			isa = PBXGroup;
 			children = (
-				B7E2BD5A2CF856510087643F /* X_GET_OR_CACHED.swift */,
-				B7E2BD5D2CF856520087643F /* XPZ.h */,
-				B7E2BD5C2CF856520087643F /* XPZ.m */,
-				B7E2BD5B2CF856510087643F /* XPZ.swift */,
+				B72FD1492D1A68020097D521 /* X_GET_OR_CACHED.swift */,
+				B72FD1462D1A68020097D521 /* XPZ.h */,
+				B72FD1472D1A68020097D521 /* XPZ.m */,
+				B72FD1482D1A68020097D521 /* XPZ.swift */,
 				B7E2BD572CF856160087643F /* PrinterSDK */,
 				B7CC7AA42B57718700E268BD /* WiffiManager.swift */,
 				B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */,
@@ -302,6 +304,8 @@
 		BB12C00E7D00844D8DDDB9AA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B72FD14E2D1A68680097D521 /* libPrinterSDK.a */,
+				B72FD14D2D1A684A0097D521 /* PrinterSDK */,
 				B7E2BD612CF858690087643F /* libPrinterSDK.a */,
 				18D8AD63243DC8C300976BF4 /* UserNotifications.framework */,
 				18D8AD65243DC8C300976BF4 /* UserNotificationsUI.framework */,
@@ -570,17 +574,17 @@
 				181663FE243CF2930097A451 /* ImageUtil.swift in Sources */,
 				18424FBC2425C8D1006D6B63 /* App21.swift in Sources */,
 				18DED9D1243D7745001771B2 /* Noti21.swift in Sources */,
+				B72FD14A2D1A68020097D521 /* XPZ.m in Sources */,
+				B72FD14C2D1A68020097D521 /* X_GET_OR_CACHED.swift in Sources */,
 				18D9AAF424504B8E0080BFCA /* Fetch21.swift in Sources */,
 				18D8AD4D243DB15600976BF4 /* extension.swift in Sources */,
 				184E9FD4243C8D520044061F /* PostFileToServer.swift in Sources */,
 				1816C8B82426EFAC009D326D /* LocalScheme.swift in Sources */,
+				B72FD14B2D1A68020097D521 /* XPZ.swift in Sources */,
 				181E40822426573E00FFB738 /* JSON.swift in Sources */,
-				B7E2BD5F2CF856520087643F /* XPZ.swift in Sources */,
 				18DED9D3243D783B001771B2 /* SERVER_NOTI.swift in Sources */,
-				B7E2BD5E2CF856520087643F /* X_GET_OR_CACHED.swift in Sources */,
 				EF94C6E9277D500E0015CCA5 /* QrCodeController.swift in Sources */,
 				181E40842426593400FFB738 /* DownloadFileTask.swift in Sources */,
-				B7E2BD602CF856520087643F /* XPZ.m in Sources */,
 				18A28FEF2450A39C00EEEB7A /* Record21.swift in Sources */,
 				18424FBE2425DC7A006D6B63 /* AttachmentHandler.swift in Sources */,
 				34B77789241B82EA00787FE3 /* ViewController.swift in Sources */,
@@ -763,7 +767,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BA2F3A18315F89ED22477C22 /* Pods-ezsspa.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cser21/Cser21.entitlements;
@@ -798,7 +801,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5A8A248746CB8C667F0A31AF /* Pods-ezsspa.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cser21/Cser21.entitlements;

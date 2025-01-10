@@ -123,16 +123,79 @@ class App21 : NSObject, CLLocationManagerDelegate
     //MARK: - CHOOSE IMAGES
     @objc func CHOOSE_IMAGES(result: Result) -> Void {
         print(result)
-        result.success = true;
-        result.data = "data"
-        App21Result(result: result);
+        
+        if let jsonData = result.params?.data(using: .utf8) {
+            do {
+                if let dictionary = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                    if let isMultiple = dictionary["isMultiple"] as? Bool {
+                        DispatchQueue.main.async { // Correct
+                            self.caller.presentMultiImagePicker(isMulti: isMultiple) { imagePaths in
+                                print(imagePaths)
+                                var img : [String] = []
+                                for image in imagePaths {
+                                    let src = DownloadFileTask().saveURL2(url: image, suffix: "ImagePicker-\(image.lastPathComponent)");
+                                    img.append(src)
+                                }
+                                let data = JSON(img)
+                                print(data)
+                                result.success = true;
+                                result.data = data
+                                self.App21Result(result: result);
+                               
+                            }
+                        }
+                    } else {
+                        result.success = false;
+                        result.data = "Not found isMultiple"
+                        self.App21Result(result: result);
+                    }
+                   
+                }
+            } catch {
+                result.success = false;
+                result.data = "Parse JSON ERROR"
+                self.App21Result(result: result);
+            }
+        }
+       
+       
     }
     
     //MARK: - CHOOSE FILES
     @objc func CHOOSE_FILES(result: Result) -> Void {
-        result.success = true;
-        result.data = "data"
-        App21Result(result: result);
+        if let jsonData = result.params?.data(using: .utf8) {
+            do {
+                if let dictionary = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                    if let isMultiple = dictionary["isMultiple"] as? Bool {
+                        DispatchQueue.main.async { // Correct
+                            self.caller.presentDocumentPicker(isMultiple: isMultiple) { filePaths in
+                                print(filePaths)
+                                var img : [String] = []
+                                for image in filePaths {
+                                    let src = DownloadFileTask().saveURL2(url: image, suffix: "FilePicker-\(image.lastPathComponent)");
+                                    img.append(src)
+                                }
+                                let data = JSON(img)
+                                print(data)
+                                result.success = true;
+                                result.data = data
+                                self.App21Result(result: result);
+                               
+                            }
+                        }
+                    } else {
+                        result.success = false;
+                        result.data = "Not found isMultiple"
+                        self.App21Result(result: result);
+                    }
+                   
+                }
+            } catch {
+                result.success = false;
+                result.data = "Parse JSON ERROR"
+                self.App21Result(result: result);
+            }
+        }
     }
     
     //MARK: - REBOOT
@@ -798,10 +861,10 @@ class App21 : NSObject, CLLocationManagerDelegate
         {
             goc = GetORCached();
         }
-        
+
         return goc?.downUrl(urlStr: url)!.absPath ;
     }
-    
+
     @objc func XPRINT_Connected(host: String?, port: Int)
     {
         if(xpz == nil)
@@ -821,7 +884,7 @@ class App21 : NSObject, CLLocationManagerDelegate
         }
         xpz?.onError(err: err)
     }
-    
+
     @objc func XPRINT_CLEAR(result: Result) -> Void
     {
         if(xpz == nil)
@@ -833,7 +896,7 @@ class App21 : NSObject, CLLocationManagerDelegate
         result.success = true;
         App21Result(result: result);
     }
-    
+
     @objc func XPRINT(result: Result) -> Void
     {
         if(xpz == nil)
@@ -844,9 +907,9 @@ class App21 : NSObject, CLLocationManagerDelegate
         result.error = "KHONG_XU_LY";
         do
         {
-            
+
             var data = (result.params?.data(using: .utf8));
-            
+
             if(data == nil)
             {
                 if(result.params == nil)
@@ -855,17 +918,17 @@ class App21 : NSObject, CLLocationManagerDelegate
                     if let jsonRaw = try? JSON(data: dataRaw!){
                         data  = try jsonRaw["params"].rawData();
                         //data = (rawParams.data(using: .utf8));
-                        
+
                     }
                 }
             }
-            
+
             if data != nil {
                 if let json = try? JSON(data: data!){
                     var ipAddress: String? = nil;
                     var pr: XPZParam? = nil;
                     var port: Int? = nil;
-                    
+
                     if(json["ipAddress"].exists())
                     {
                         ipAddress = json["ipAddress"].stringValue;
@@ -879,7 +942,7 @@ class App21 : NSObject, CLLocationManagerDelegate
                     {
                         port = 9100;
                     }
-                    
+
                     let decoder = JSONDecoder()
                     if(json["param"].exists())
                     {
@@ -887,10 +950,10 @@ class App21 : NSObject, CLLocationManagerDelegate
                         let d1 = prStr!.data(using: .utf8)!;
                         pr = try decoder.decode(XPZParam.self, from: d1)
                     }
-                    
-                    
-                    
-                   
+
+
+
+
                     if(ipAddress == nil)
                     {
                        throw Error21.runtimeError("ipAddress is null")
@@ -899,7 +962,7 @@ class App21 : NSObject, CLLocationManagerDelegate
                     {
                        throw Error21.runtimeError("param is null")
                     }
-                    
+
                     var items = pr!.items;
                     for item in items!
                     {
@@ -908,8 +971,8 @@ class App21 : NSObject, CLLocationManagerDelegate
                             item.self.imageLocalPath = downForPrint(url: item.self.imageUrl);
                         }
                     }
-                    
-                    
+
+
                     xpz?.result = result;
                     xpz?.printParam(ipAddress: ipAddress!, port: port!, param: pr!);
                     result.error = nil;
@@ -921,10 +984,10 @@ class App21 : NSObject, CLLocationManagerDelegate
             result.error = error.localizedDescription;
             result.success = false;
         }
-        
+
         App21Result(result: result);
     }
-    
+
     //MARK: STORE_TEXT
     @objc func STORE_TEXT(result: Result) -> Void
     {
@@ -934,24 +997,24 @@ class App21 : NSObject, CLLocationManagerDelegate
             if data != nil {
                 if let json = try? JSON(data: data!){
                     var name: String? = nil;
-                   
+
                     let fileManager = FileManager.default
-                    
-                    
+
+
                     if(json["name"].exists())
                     {
                         name = json["name"].stringValue;
                     }
-                    
+
                     if(name == nil)
                     {
                         throw Error21.runtimeError("name is null");
                     }
-                    
+
                     let fileName = "STORE_TEXT_" + name!;
-                    
+
                     if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first{
-                        
+
                         let fileUrl = dir.appendingPathComponent(fileName);
                         if(json["value"].exists())
                         {
@@ -962,10 +1025,10 @@ class App21 : NSObject, CLLocationManagerDelegate
                             let text = try String(contentsOf: fileUrl, encoding: .utf8)
                             result.data = JSON(text);
                         }
-                        
+
                     }
-                    
-                    
+
+
                     result.success = true;
                     App21Result(result: result);
                 }
@@ -977,12 +1040,12 @@ class App21 : NSObject, CLLocationManagerDelegate
             App21Result(result: result);
         }
     }
-    
+
     //MARK: GET_OR_CACHED
     var goc: GetORCached? = nil;
     @objc func GET_OR_CACHED(result: Result) -> Void
     {
-        
+
 
         do
         {
@@ -992,7 +1055,7 @@ class App21 : NSObject, CLLocationManagerDelegate
                     let url: String? = json["url"].stringValue;
                     var type = 0;
                     var returnType = 0;
-                    
+
                     if(json["type"].exists())
                     {
                         type = json["type"].intValue;
@@ -1001,12 +1064,12 @@ class App21 : NSObject, CLLocationManagerDelegate
                     {
                         returnType = json["returnType"].intValue;
                     }
-                    
+
                     if(url == nil || url!.isEmpty) {
                         throw Error21.runtimeError("url is null");
-                        
+
                     }
-                    
+
                     if( goc == nil)
                     {
                         goc = GetORCached();
@@ -1022,8 +1085,8 @@ class App21 : NSObject, CLLocationManagerDelegate
             result.success = false;
             App21Result(result: result);
         }
-        
-       
+
+
 
 
         //let jo = try? JSONSerialization.jsonObject(with: data, options: [])

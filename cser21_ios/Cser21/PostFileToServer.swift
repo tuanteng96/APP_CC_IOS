@@ -31,7 +31,7 @@ class PostFileToServer{
                 let fn = down.getName(path: pinfo.path!)
                 let data = down.localToData(filePath: pinfo.path!)
                 //multipartFormData.append(data, withName: "image", fileName: "image.png", mimeType: "image/png")
-                multipartFormData.append(data, withName: "file", fileName: fn, mimeType: "file/*")
+                multipartFormData.append(data, withName: String(pinfo.path!.split(separator: ".").last ?? "file"), fileName: fn, mimeType: "file/*")
                 
             }, usingThreshold: UInt64.init(), to: url, method: .post, headers: headers) { (rsp) in
                 switch rsp{

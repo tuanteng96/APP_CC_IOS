@@ -110,7 +110,8 @@ extension AttachmentHandler: UIImagePickerControllerDelegate, UINavigationContro
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            self.imagePickedBlock?(image)
+            let fixedImage = image.fixOrientation()
+            self.imagePickedBlock?(fixedImage)
         } else {
         }
         // To handle video
@@ -148,4 +149,19 @@ extension AttachmentHandler: UIDocumentPickerDelegate, UIDocumentMenuDelegate {
         currentVC?.dismiss(animated: true, completion: nil)
     }
     
+}
+
+extension UIImage {
+    func fixOrientation() -> UIImage {
+        if self.imageOrientation == .up {
+            return self
+        }
+        
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+        self.draw(in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
+        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return normalizedImage ?? self
+    }
 }

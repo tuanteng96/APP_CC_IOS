@@ -13,8 +13,17 @@ import MapKit
 import CoreLocation
 import AVFoundation
 import SystemConfiguration.CaptiveNetwork
+import PhotosUI
 
-class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognizerDelegate,CLLocationManagerDelegate ,AVAudioRecorderDelegate, WKNavigationDelegate, POSWIFIManagerDelegate   {
+
+
+
+class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognizerDelegate,CLLocationManagerDelegate ,AVAudioRecorderDelegate, WKNavigationDelegate, POSWIFIManagerDelegate,
+    PHPickerViewControllerDelegate, UIImagePickerControllerDelegate ,
+    UIDocumentPickerDelegate, UINavigationControllerDelegate{
+    
+    
+
 
     let HTML_EMBED = "embed21"
     let domain = "https://cser.vn/";
@@ -524,16 +533,18 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         // Do any additional setup after loading the view, typically from a nib.
         
         //DEV OPEN
+        
 //        wv.isUserInteractionEnabled = true;
 //        wv.scrollView.isScrollEnabled = false;
 //        wv.scrollView.bounces = false;
 //        wv.scrollView.showsHorizontalScrollIndicator = false;
 //        wv.scrollView.showsVerticalScrollIndicator = false;
 //
-//        let link = URL(string:"http://192.168.2.103:5001/")!
+//        let link = URL(string:"http://192.168.100.174:5001/")!
 //        let request = URLRequest(url: link)
 //        wv.load(request);
 //        view.addSubview(wv);
+        
         // DEV OPEN
         
         // load embed.html
@@ -674,6 +685,100 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         wv.evaluateJavaScript("app_response('\(cmd)','\(value)',true)",completionHandler: nil)
     }
     
+    func presentMultiImagePicker(isMulti : Bool ,completion: @escaping ([URL]) -> Void) {
+        if #available(iOS 14.0, *), isMulti {
+            var configuration = PHPickerConfiguration()
+            configuration.selectionLimit =  0
+            configuration.filter = .images
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            self.completionPickImageHandler = completion
+            present(picker, animated: true, completion: nil)
+        } else {
+            let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.allowsEditing = false
+            imagePicker.delegate = self
+            self.completionPickImageHandler = completion
+            present(imagePicker, animated: true, completion: nil)
+        }
+              
+    }
+    
+    private var completionPickImageHandler: (([URL]) -> Void)?
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            picker.dismiss(animated: true, completion: nil)
+
+            if let selectedImage = info[.imageURL] as? URL {
+               print(selectedImage)
+                self.completionPickImageHandler?([selectedImage])
+            }
+        }
+    
+    @available(iOS 14.0, *)
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        let dispatchGroup = DispatchGroup()
+                var imageUrls: [URL] = []
+                
+                for result in results {
+                    if result.itemProvider.hasItemConformingToTypeIdentifier("public.image") {
+                        dispatchGroup.enter()
+                        result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { (url, error) in
+                            defer {
+                                dispatchGroup.leave()
+                            }
+                            
+                            if let error = error {
+                                print("Error loading image: \(error.localizedDescription)")
+                                return
+                            }
+                            
+                            guard let url = url else {
+                                print("No URL found for image")
+                                return
+                            }
+                            
+                            do {
+                                // Copy the file to a local URL to ensure it's accessible
+                                let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                                let fileName = UUID().uuidString + "." + url.lastPathComponent.split(separator: ".").last!
+                                let destinationURL = documentsDirectory.appendingPathComponent(fileName)
+                                try FileManager.default.copyItem(at: url, to: destinationURL)
+                                imageUrls.append(destinationURL)
+                                print("Image URL: \(destinationURL)")
+                            } catch {
+                                print("Error copying file: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+                }
+        dispatchGroup.notify(queue: .main) {
+            self.completionPickImageHandler?(imageUrls)
+        }
+        
+    }
+    
+    func presentDocumentPicker(isMultiple: Bool, completion: @escaping ([URL]) -> Void) {
+        self.completionPickImageHandler = completion
+        if #available(iOS 14.0, *) {
+            let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.item], asCopy: true)
+            documentPicker.allowsMultipleSelection = isMultiple
+            documentPicker.delegate = self
+            present(documentPicker, animated: true, completion: nil)
+        } else {
+            
+            let documentPicker = UIDocumentPickerViewController(documentTypes: ["public.data", "public.content"], in: .import)
+            documentPicker.allowsMultipleSelection = isMultiple
+            documentPicker.delegate = self
+            present(documentPicker, animated: true, completion: nil)
+        }
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        self.completionPickImageHandler?(urls)
+    }
     
     
     
