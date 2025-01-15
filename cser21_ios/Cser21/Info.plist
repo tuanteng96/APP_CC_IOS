@@ -18,6 +18,8 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app need your bluetooth</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -36,15 +38,15 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>$(PRODUCT_NAME) calendar events</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera is required to use this application</string>
+	<string>$(PRODUCT_NAME) would like to access your Camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>$(PRODUCT_NAME) contact use</string>
 	<key>NSFileProviderDomainUsageDescription</key>
 	<string>$(PRODUCT_NAME) file use</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME) location use</string>
+	<string>$(PRODUCT_NAME) needs location access</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) location use</string>
+	<string>$(PRODUCT_NAME) needs location access</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) microphone use</string>
 	<key>NSPhotoLibraryUsageDescription</key>
