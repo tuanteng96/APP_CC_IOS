@@ -30,6 +30,8 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     
     var qrCodeResult: Result = Result()
     
+    var isShowLoading = false
+    
     //21/10/2024
     //MARK: POSwifiConnectedToHost
     
@@ -464,7 +466,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         let frm = CGRect(x:0 , y:0, width: view.bounds.width, height: view.bounds.height)
         //app21: handler file local
         webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-        webConfiguration.setValue(true, forKey: "_allowUniversalAccessFromFileURLs")
+        //webConfiguration.setValue(true, forKey: "_allowUniversalAccessFromFileURLs")
         webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "local")
         webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "js")
         webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "app21")
@@ -540,7 +542,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         wv.scrollView.showsHorizontalScrollIndicator = false;
         wv.scrollView.showsVerticalScrollIndicator = false;
 
-        let link = URL(string:"http://192.168.2.103:5001/")!
+        let link = URL(string:"http://169.254.171.200:5001/")!
         let request = URLRequest(url: link)
         wv.load(request);
         view.addSubview(wv);
@@ -685,6 +687,31 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         wv.evaluateJavaScript("app_response('\(cmd)','\(value)',true)",completionHandler: nil)
     }
     
+    func shareImages(images: [String], text: String, completeShare:@escaping ()->Void) {
+        showLoading(text: "Please wait...")
+        downloadImagesFromNetwork(imageUrls: images) { uiImages in
+            self.hideLoading(completion:  {
+                var items = []
+                items.append(text)
+                for img in uiImages {
+                    items.append(img)
+                }
+                let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: [])
+                    activityViewController.popoverPresentationController?.sourceView = self.view
+                if #available(iOS 13.0, *) {
+                    activityViewController.isModalInPresentation = true
+                }
+                activityViewController.completionWithItemsHandler = { (activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) -> Void in
+                    if completed == true {
+                        completeShare()
+                    }
+                }
+                   self.present(activityViewController, animated: true, completion: nil)
+                
+            })
+        }
+    }
+    
     func presentMultiImagePicker(isMulti : Bool ,completion: @escaping ([URL]) -> Void) {
         if #available(iOS 14.0, *), isMulti {
             var configuration = PHPickerConfiguration()
@@ -780,7 +807,67 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         self.completionPickImageHandler?(urls)
     }
     
+    private func downloadImagesFromNetwork(imageUrls: [String],completion: @escaping ([UIImage]) -> Void) {
+       var images: [UIImage] = []
+          let dispatchGroup = DispatchGroup()
+        
+          for url in imageUrls {
+              guard let imageUrl = URL(string: url) else { continue }
+              
+              dispatchGroup.enter() // Bắt đầu theo dõi tải xuống hình ảnh
+
+              URLSession.shared.dataTask(with: imageUrl) { data, response, error in
+                  defer {
+                      dispatchGroup.leave() // Kết thúc theo dõi khi hoàn thành việc tải xuống hình ảnh
+                  }
+
+                  // Xử lý lỗi
+                  if let error = error {
+                      print("Error downloading image: \(error)")
+                      return
+                  }
+
+                  // Kiểm tra dữ liệu hình ảnh
+                  guard let data = data, let image = UIImage(data: data) else {
+                      print("Invalid image data")
+                      return
+                  }
+                  images.append(image) // Thêm hình ảnh vào mảng
+              }.resume()
+          }
+
+          // Thực hiện closure khi tất cả các tác vụ trong DispatchGroup đã hoàn thành
+          dispatchGroup.notify(queue: .main) {
+              completion(images)
+          }
+              
+       
+    }
     
+    private func showLoading(text: String){
+        if(isShowLoading) {
+            return;
+        }
+        let alert = UIAlertController(title: nil, message: text, preferredStyle: .alert)
+        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.style = UIActivityIndicatorView.Style.gray
+        loadingIndicator.startAnimating();
+
+        alert.view.addSubview(loadingIndicator)
+        present(alert, animated: true, completion: nil)
+        isShowLoading = true;
+    }
+    
+    private func hideLoading(completion: @escaping () -> Void){
+        if(isShowLoading){
+            self.dismiss(animated: false, completion:{
+                completion()
+                
+           } )
+            isShowLoading = false;
+        }
+    }
     
 }
 extension ViewController: UIWebViewDelegate

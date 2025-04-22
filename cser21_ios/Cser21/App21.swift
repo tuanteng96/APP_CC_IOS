@@ -724,6 +724,35 @@ class App21 : NSObject, CLLocationManagerDelegate
         
     }
     
+    //MARK: - SHARE SOCIAL
+    @objc func SHARE_SOCIAL(result: Result) -> Void {
+        //
+        result.success = false;
+        if let jsonData = result.params?.data(using: .utf8) {
+            do {
+                let json = try JSONSerialization.jsonObject(with: jsonData, options: [])
+                if let jsonObject = json as? [String: Any] {
+                    
+                    let images = jsonObject["Images"] as? [String]
+                    let text = jsonObject["Content"] as? String
+                    
+                    DispatchQueue.main.asyncAfter(deadline:.now()) {
+                        self.caller.shareImages(images: images ?? [], text: text ?? "", completeShare: {
+                            result.success = true
+                            result.params = ""
+                            result.data = "Share thành công"
+                            self.App21Result(result: result);
+                        })
+                    }
+                    
+                }
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+    }
+    
     
     //MARK: - WV_VISIBLE
     @objc func WV_VISIBLE(result: Result) -> Void

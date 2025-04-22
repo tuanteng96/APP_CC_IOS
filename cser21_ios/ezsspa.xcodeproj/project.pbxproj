@@ -40,7 +40,6 @@
 		B72FD14F2D1A687D0097D521 /* libPrinterSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B72FD14E2D1A68680097D521 /* libPrinterSDK.a */; };
 		B78D29502A9706E80017C1E4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */; };
 		B7CC7AA52B57718700E268BD /* WiffiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CC7AA42B57718700E268BD /* WiffiManager.swift */; };
-		B7E2BD582CF856160087643F /* PrinterSDK in Resources */ = {isa = PBXBuildFile; fileRef = B7E2BD572CF856160087643F /* PrinterSDK */; };
 		EF94C6E9277D500E0015CCA5 /* QrCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF94C6E8277D500E0015CCA5 /* QrCodeController.swift */; };
 /* End PBXBuildFile section */
 
@@ -134,7 +133,6 @@
 		B72FD14E2D1A68680097D521 /* libPrinterSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPrinterSDK.a; path = ../PrinterSDK/libPrinterSDK.a; sourceTree = "<group>"; };
 		B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B7CC7AA42B57718700E268BD /* WiffiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WiffiManager.swift; sourceTree = "<group>"; };
-		B7E2BD572CF856160087643F /* PrinterSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PrinterSDK; path = ../../../../../Downloads/app_cc_ios/cser21_ios/Cser21/PrinterSDK; sourceTree = "<group>"; };
 		B7E2BD592CF856510087643F /* ezsspa-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ezsspa-Bridging-Header.h"; sourceTree = "<group>"; };
 		B7E2BD612CF858690087643F /* libPrinterSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPrinterSDK.a; path = Cser21/PrinterSDK/libPrinterSDK.a; sourceTree = "<group>"; };
 		BA2F3A18315F89ED22477C22 /* Pods-ezsspa.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ezsspa.debug.xcconfig"; path = "Target Support Files/Pods-ezsspa/Pods-ezsspa.debug.xcconfig"; sourceTree = "<group>"; };
@@ -250,7 +248,6 @@
 				B72FD1462D1A68020097D521 /* XPZ.h */,
 				B72FD1472D1A68020097D521 /* XPZ.m */,
 				B72FD1482D1A68020097D521 /* XPZ.swift */,
-				B7E2BD572CF856160087643F /* PrinterSDK */,
 				B7CC7AA42B57718700E268BD /* WiffiManager.swift */,
 				B78D294F2A9706E80017C1E4 /* GoogleService-Info.plist */,
 				18D1BE3F24558950001B95F7 /* fonts */,
@@ -434,7 +431,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B7E2BD582CF856160087643F /* PrinterSDK in Resources */,
 				34B77791241B82EB00787FE3 /* LaunchScreen.storyboard in Resources */,
 				349088FA241B8A3D004AD9A0 /* embed.html in Resources */,
 				18D1BE4024558950001B95F7 /* fonts in Resources */,
