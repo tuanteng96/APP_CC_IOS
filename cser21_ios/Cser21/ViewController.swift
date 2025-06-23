@@ -542,7 +542,7 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
         wv.scrollView.showsHorizontalScrollIndicator = false;
         wv.scrollView.showsVerticalScrollIndicator = false;
 
-        let link = URL(string:"http://169.254.171.200:5001/")!
+        let link = URL(string:"http://192.168.100.248:5001/")!
         let request = URLRequest(url: link)
         wv.load(request);
         view.addSubview(wv);
@@ -747,45 +747,50 @@ class ViewController: UIViewController,WKScriptMessageHandler,UIGestureRecognize
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
         let dispatchGroup = DispatchGroup()
-                var imageUrls: [URL] = []
-                
-                for result in results {
-                    if result.itemProvider.hasItemConformingToTypeIdentifier("public.image") {
-                        dispatchGroup.enter()
-                        result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { (url, error) in
-                            defer {
-                                dispatchGroup.leave()
-                            }
-                            
-                            if let error = error {
-                                print("Error loading image: \(error.localizedDescription)")
-                                return
-                            }
-                            
-                            guard let url = url else {
-                                print("No URL found for image")
-                                return
-                            }
-                            
-                            do {
-                                // Copy the file to a local URL to ensure it's accessible
-                                let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                                let fileName = UUID().uuidString + "." + url.lastPathComponent.split(separator: ".").last!
-                                let destinationURL = documentsDirectory.appendingPathComponent(fileName)
-                                try FileManager.default.copyItem(at: url, to: destinationURL)
-                                imageUrls.append(destinationURL)
-                                print("Image URL: \(destinationURL)")
-                            } catch {
-                                print("Error copying file: \(error.localizedDescription)")
-                            }
+        var imageUrls: [URL] = []
+        
+        for result in results {
+            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
+                dispatchGroup.enter()
+                result.itemProvider.loadObject(ofClass: UIImage.self) { (object, error) in
+                    defer { dispatchGroup.leave() }
+                    
+                    if let error = error {
+                        print("Error loading image: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    guard let image = object as? UIImage else {
+                        print("Loaded object is not UIImage")
+                        return
+                    }
+                    
+                    // Sửa orientation
+                    let fixedImage = image.fixedOrientation()
+                    
+                    // Ghi vào file tạm trong Document directory
+                    if let imageData = fixedImage.jpegData(compressionQuality: 1.0) {
+                        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                        let fileName = UUID().uuidString + ".jpg"
+                        let destinationURL = documentsDirectory.appendingPathComponent(fileName)
+                        
+                        do {
+                            try imageData.write(to: destinationURL)
+                            imageUrls.append(destinationURL)
+                            print("Saved image to: \(destinationURL)")
+                        } catch {
+                            print("Error saving image: \(error.localizedDescription)")
                         }
                     }
                 }
+            }
+        }
+        
         dispatchGroup.notify(queue: .main) {
             self.completionPickImageHandler?(imageUrls)
         }
-        
     }
+
     
     func presentDocumentPicker(isMultiple: Bool, completion: @escaping ([URL]) -> Void) {
         self.completionPickImageHandler = completion
@@ -988,4 +993,19 @@ var statusBarUIView: UIView? {
     return nil
   }
 }
+
+extension UIImage {
+    func fixedOrientation() -> UIImage {
+        if imageOrientation == .up {
+            return self
+        }
+
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(in: CGRect(origin: .zero, size: size))
+        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return normalizedImage ?? self
+    }
+}
+
 
